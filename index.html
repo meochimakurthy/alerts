@@ -3,172 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEO Chimakurthy Portal</title>
+    <title>MEO Chimakurthy - Official Portal</title>
     <style>
-        :root { --blue: #1a73e8; --text: #333; --light: #f1f3f4; }
+        :root { --ap-blue: #0056b3; --ap-gold: #ffcc00; --text: #202124; }
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #fff; color: var(--text); }
         
-        /* Header Table Style */
-        .header-table { width: 100%; border-collapse: collapse; text-align: center; border-bottom: 2px solid var(--blue); }
-        .header-table td { border: 1px solid #ddd; padding: 10px; vertical-align: top; width: 25%; }
-        .main-title { font-weight: bold; background: #f8f9fa; }
-        .official-img { width: 80px; height: 100px; object-fit: cover; background: #eee; display: block; margin: 5px auto; border-radius: 4px; }
-        .symbol-img { width: 60px; height: 60px; }
+        /* 1. Header Table Layout (Positional Conscious) */
+        .header-container { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .header-container td { border: 1px solid #ccc; text-align: center; vertical-align: middle; padding: 5px; }
+        
+        .main-heading { background: #f1f3f4; font-weight: bold; font-size: 1.1rem; padding: 10px !important; }
+        .dept-logo { width: 100%; max-width: 150px; height: auto; }
+        .official-photo { width: 90px; height: 110px; object-fit: cover; border: 1px solid #ddd; margin-top: 5px; background: #eee; }
+        .state-emblem { width: 70px; height: 70px; }
 
-        /* Navigation Labels */
-        .nav-bar { display: flex; justify-content: center; background: #fff; border-bottom: 3px solid var(--blue); }
-        .nav-item { padding: 15px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; border-right: 1px solid #eee; }
-        .nav-item:hover { background: var(--blue); color: white; }
+        /* 2. Navigation Row */
+        .nav-bar { display: flex; background: #0056b3; color: white; border-bottom: 2px solid var(--ap-gold); flex-wrap: wrap; }
+        .nav-btn { flex: 1; padding: 15px 5px; text-align: center; cursor: pointer; font-weight: bold; font-size: 0.9rem; border-right: 1px solid rgba(255,255,255,0.2); transition: 0.3s; }
+        .nav-btn:hover { background: #003d7a; color: var(--ap-gold); }
 
-        /* Latest Alert - Horizontal Moving */
-        .alert-zone { background: #fff3cd; padding: 10px; border-bottom: 1px solid #ffeeba; overflow: hidden; white-space: nowrap; }
-        .marquee-h { display: inline-block; animation: scroll-h 20s linear infinite; font-weight: bold; color: #856404; }
-        .blink { animation: blinker 1.2s linear infinite; color: red; margin-right: 10px; }
+        /* 3. Latest Alert (Flashing/Moving) */
+        .alert-row { background: #fffde7; border-bottom: 1px solid #ffe082; padding: 8px; overflow: hidden; white-space: nowrap; }
+        .alert-move { display: inline-block; animation: scroll-alert 25s linear infinite; font-weight: bold; color: #c62828; }
+        .blink { animation: blinker 1s step-start infinite; color: #ff0000; font-weight: 900; margin-right: 10px; }
 
-        /* Main Content Layout (Photos + Tasks) */
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; width: 100%; border-bottom: 1px solid #ddd; }
-        .grid-box { border-right: 1px solid #ddd; min-height: 300px; }
-        .box-title { background: #eee; padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd; text-align: center; }
+        /* 4. Content Area (Photos & Tasks Side-by-Side) */
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #ddd; }
+        .grid-cell { border-right: 1px solid #ddd; position: relative; height: 300px; overflow: hidden; }
+        .cell-title { background: #e8f0fe; padding: 10px; font-weight: bold; text-align: center; border-bottom: 1px solid #ddd; color: var(--ap-blue); }
 
         /* Photo Scroller */
-        .photo-scroller { position: relative; height: 260px; overflow: hidden; }
-        .photo-scroller img { width: 100%; height: 100%; object-fit: contain; position: absolute; opacity: 0; transition: opacity 1s; }
-        .photo-scroller img.active { opacity: 1; }
+        .photo-frame { width: 100%; height: 260px; position: relative; }
+        .photo-frame img { width: 100%; height: 100%; object-fit: contain; position: absolute; opacity: 0; transition: opacity 1s; }
+        .photo-frame img.active { opacity: 1; }
 
-        /* Task Scroller - Vertical */
-        .task-window { height: 260px; overflow: hidden; position: relative; }
-        .task-move { position: absolute; width: 100%; animation: scroll-v 15s linear infinite; padding: 10px; }
-        .task-move:hover { animation-play-state: paused; }
-        .task-row { padding: 8px; border-bottom: 1px dotted #ccc; display: flex; align-items: center; }
-        .task-row::before { content: "■"; color: var(--blue); margin-right: 10px; font-size: 10px; }
+        /* Task Scroller (Vertical) */
+        .task-frame { height: 260px; position: relative; overflow: hidden; }
+        .task-scroll { position: absolute; width: 100%; animation: scroll-task 15s linear infinite; }
+        .task-scroll:hover { animation-play-state: paused; }
+        .task-item { padding: 10px 15px; border-bottom: 1px dotted #ccc; display: flex; align-items: center; font-size: 0.95rem; }
+        .task-item::before { content: '●'; color: #34a853; margin-right: 10px; font-size: 12px; }
 
-        /* Link Content Pop-up/View */
-        #content-view { padding: 20px; display: none; background: #fafafa; border-bottom: 2px solid var(--blue); }
-        .list-link { display: block; padding: 10px; margin: 5px 0; background: #fff; border: 1px solid #ddd; text-decoration: none; color: #333; }
+        /* Dynamic Content View (When menu clicked) */
+        #content-view { display: none; padding: 20px; background: #fafafa; border-bottom: 5px solid #0056b3; }
+        .data-link { display: block; padding: 12px; margin: 5px 0; background: white; border: 1px solid #eee; text-decoration: none; color: #333; border-radius: 4px; font-weight: 500; }
+        .data-link:hover { background: #e8f0fe; border-color: #0056b3; }
 
-        @keyframes scroll-h { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        @keyframes scroll-v { 0% { top: 100%; } 100% { top: -100%; } }
+        @keyframes scroll-alert { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        @keyframes scroll-task { 0% { top: 100%; } 100% { top: -100%; } }
         @keyframes blinker { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
 
-<table class="header-table">
-    <tr class="main-title">
-        <td colspan="4">Samagra Shiksha, Andhra Pradesh (With official Logo)<br>MANDAL EDUCATIONAL OFFICER, CHIMAKURTHY MANDAL OFFICIAL PORTAL</td>
+<table class="header-container">
+    <tr>
+        <td width="20%"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3a/Samagra_Shiksha_Logo.png/220px-Samagra_Shiksha_Logo.png" class="dept-logo"></td>
+        <td colspan="2" class="main-heading">
+            SAMAGRA SHIKSHA, ANDHRA PRADESH<br>
+            MANDAL EDUCATIONAL OFFICER, CHIMAKURTHY MANDAL OFFICIAL PORTAL
+        </td>
+        <td width="20%"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Emblem_of_Andhra_Pradesh.svg" class="state-emblem"></td>
     </tr>
     <tr>
         <td>
-            <b>Andhra Pradesh CM</b><br>
-            <img id="head-cm-img" class="official-img" alt="CM Photo">
-            <span id="head-cm-name">Loading...</span>
+            <b>Hon'ble CM</b><br>
+            <img id="cm-pic" class="official-photo"><br>
+            <span id="cm-name">...</span>
         </td>
         <td>
             <b>Present MEO-1</b><br>
-            <img id="head-meo1-img" class="official-img" alt="MEO 1">
-            <span id="head-meo1-name">Loading...</span>
+            <img id="meo-pic" class="official-photo"><br>
+            <span id="meo-name">...</span>
         </td>
         <td>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Emblem_of_Andhra_Pradesh.svg" class="symbol-img"><br>
-            <b>Andhra Symbol</b>
+            <b>Present MEO-2</b><br>
+            <img id="meo2-pic" class="official-photo"><br>
+            <span id="meo2-name">...</span>
         </td>
         <td>
             <b>Education Minister</b><br>
-            <img id="head-min-img" class="official-img" alt="Minister Photo">
-            <span id="head-min-name">Loading...</span>
+            <img id="min-pic" class="official-photo"><br>
+            <span id="min-name">...</span>
         </td>
     </tr>
 </table>
 
 <div class="nav-bar">
-    <div class="nav-item" onclick="showData('Home')">Home</div>
-    <div class="nav-item" onclick="showData('Contact')">Contact</div>
-    <div class="nav-item" onclick="showData('Important Links')">Important Links</div>
-    <div class="nav-item" onclick="showData('UDISE')">UDISE</div>
-    <div class="nav-item" onclick="showData('Statistics')">Statistics</div>
-    <div class="nav-item" onclick="showData('Downloads')">Downloads</div>
-    <div class="nav-item" onclick="showData('HM Login')">HM Login</div>
+    <div class="nav-btn" onclick="fetchMenu('Home')">HOME</div>
+    <div class="nav-btn" onclick="fetchMenu('Contact')">CONTACT</div>
+    <div class="nav-btn" onclick="fetchMenu('Important links')">IMPORTANT LINKS</div>
+    <div class="nav-btn" onclick="fetchMenu('UDISE')">UDISE</div>
+    <div class="nav-btn" onclick="fetchMenu('Statistics')">STATISTICS</div>
+    <div class="nav-btn" onclick="fetchMenu('Downloads')">DOWNLOADS</div>
+    <div class="nav-btn" onclick="fetchMenu('HM Login')">HM LOGIN</div>
 </div>
 
 <div id="content-view">
-    <h3 id="view-title"></h3>
+    <h3 id="view-title" style="margin-top:0"></h3>
     <div id="view-list"></div>
 </div>
 
-<div class="alert-zone">
-    <div class="marquee-h" id="alert-content">Loading Alerts...</div>
+<div class="alert-row">
+    <div class="alert-move" id="alert-box">Loading Latest Alerts...</div>
 </div>
 
 <div class="main-grid">
-    <div class="grid-box">
-        <div class="box-title">Photo Scroller</div>
-        <div class="photo-scroller" id="photo-area"></div>
+    <div class="grid-cell">
+        <div class="cell-title">PHOTO SCROLLER</div>
+        <div class="photo-frame" id="photo-frame"></div>
     </div>
-    <div class="grid-box" style="border-right:0">
-        <div class="box-title">Current Running Tasks</div>
-        <div class="task-window">
-            <div class="task-move" id="task-area"></div>
+    <div class="grid-cell" style="border-right:0">
+        <div class="cell-title">CURRENT RUNNING TASKS</div>
+        <div class="task-frame">
+            <div class="task-scroll" id="task-box"></div>
         </div>
     </div>
 </div>
 
 <script>
-    const SHEET_ID = '1TVWIHBrWDw0lflCmooFEhYcCfQenM8mAVRHSYt_bFZ4';
-    const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-    let allData = [];
+    const S_ID = '1TVWIHBrWDw0lflCmooFEhYcCfQenM8mAVRHSYt_bFZ4';
+    const G_URL = `https://docs.google.com/spreadsheets/d/${S_ID}/gviz/tq?tqx=out:json`;
+    let db = [];
 
-    async function loadSite() {
-        const res = await fetch(URL);
-        const text = await res.text();
-        const json = JSON.parse(text.substr(47).slice(0, -2));
-        allData = json.table.rows;
+    async function sync() {
+        const r = await fetch(G_URL);
+        const t = await r.text();
+        const j = JSON.parse(t.substr(47).slice(0, -2));
+        db = j.table.rows;
 
-        // Populate Header Photos/Names (Assumes Category 'Header')
-        updateHeader('CM', 'head-cm-name', 'head-cm-img');
-        updateHeader('MEO1', 'head-meo1-name', 'head-meo1-img');
-        updateHeader('Minister', 'head-min-name', 'head-min-img');
+        // Update Officials (Based on Col A: CM, MEO1, MEO2, Minister)
+        setOfficial('CM', 'cm-name', 'cm-pic');
+        setOfficial('MEO1', 'meo-name', 'meo-pic');
+        setOfficial('MEO2', 'meo2-name', 'meo2-pic');
+        setOfficial('Minister', 'min-name', 'min-pic');
 
-        // Populate Alert
-        const alerts = allData.filter(r => r.c[0]?.v === 'Latest Alert');
-        document.getElementById('alert-content').innerHTML = alerts.map(r => `<span class="blink">NEW:</span> ${r.c[1].v}`).join(' | ');
+        // Update Alerts
+        const alerts = db.filter(x => x.c[0]?.v === 'Latest Alert');
+        document.getElementById('alert-box').innerHTML = alerts.map(x => `<span class="blink">NEW:</span> ${x.c[1].v}`).join(' &nbsp; | &nbsp; ');
 
-        // Populate Photos
-        const photos = allData.filter(r => r.c[0]?.v === 'Photos');
-        const photoArea = document.getElementById('photo-area');
-        photos.forEach((r, i) => {
+        // Update Photos (Col C for URLs)
+        const photos = db.filter(x => x.c[0]?.v === 'Photos');
+        const frame = document.getElementById('photo-frame');
+        photos.forEach((x, i) => {
             const img = document.createElement('img');
-            img.src = r.c[2].v;
-            if(i===0) img.className = 'active';
-            photoArea.appendChild(img);
+            img.src = x.c[2].v;
+            if(i === 0) img.className = 'active';
+            frame.appendChild(img);
         });
-        startSlider();
+        initSlider();
 
-        // Populate Tasks
-        const tasks = allData.filter(r => r.c[0]?.v === 'Current Running Tasks');
-        document.getElementById('task-area').innerHTML = tasks.map(r => `<div class="task-row">${r.c[1].v}</div>`).join('');
+        // Update Tasks (Col B for text)
+        const tasks = db.filter(x => x.c[0]?.v === 'Current Running Tasks');
+        document.getElementById('task-box').innerHTML = tasks.map(x => `<div class="task-item">${x.c[1].v}</div>`).join('');
     }
 
-    function updateHeader(key, nameId, imgId) {
-        const row = allData.find(r => r.c[0]?.v === key);
+    function setOfficial(key, nameId, imgId) {
+        const row = db.find(x => x.c[0]?.v === key);
         if(row) {
             document.getElementById(nameId).innerText = row.c[1].v;
             document.getElementById(imgId).src = row.c[2].v;
         }
     }
 
-    function showData(category) {
+    function fetchMenu(cat) {
         const view = document.getElementById('content-view');
         const list = document.getElementById('view-list');
-        const filtered = allData.filter(r => r.c[0]?.v === category);
+        const items = db.filter(x => x.c[0]?.v?.toLowerCase() === cat.toLowerCase());
         
-        document.getElementById('view-title').innerText = category;
-        list.innerHTML = filtered.map(r => `<a href="${r.c[2]?.v || '#'}" target="_blank" class="list-link">${r.c[1].v}</a>`).join('');
+        document.getElementById('view-title').innerText = cat;
+        list.innerHTML = items.map(x => `<a href="${x.c[2]?.v || '#'}" target="_blank" class="data-link">${x.c[1].v}</a>`).join('');
         view.style.display = 'block';
+        window.scrollTo({ top: 200, behavior: 'smooth' });
     }
 
-    function startSlider() {
+    function initSlider() {
         let current = 0;
-        const imgs = document.querySelectorAll('.photo-scroller img');
+        const imgs = document.querySelectorAll('.photo-frame img');
         if(imgs.length > 1) {
             setInterval(() => {
                 imgs[current].classList.remove('active');
@@ -178,7 +189,8 @@
         }
     }
 
-    loadSite();
+    sync();
 </script>
+
 </body>
 </html>
