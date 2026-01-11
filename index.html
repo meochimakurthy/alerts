@@ -3,189 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Admin Portal</title>
+    <title>MEO Chimakurthy Portal</title>
     <style>
-        :root {
-            --primary: #1a73e8;
-            --dark: #202124;
-            --accent: #d93025;
-            --bg: #f1f3f4;
-        }
+        :root { --blue: #1a73e8; --text: #333; --light: #f1f3f4; }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #fff; color: var(--text); }
+        
+        /* Header Table Style */
+        .header-table { width: 100%; border-collapse: collapse; text-align: center; border-bottom: 2px solid var(--blue); }
+        .header-table td { border: 1px solid #ddd; padding: 10px; vertical-align: top; width: 25%; }
+        .main-title { font-weight: bold; background: #f8f9fa; }
+        .official-img { width: 80px; height: 100px; object-fit: cover; background: #eee; display: block; margin: 5px auto; border-radius: 4px; }
+        .symbol-img { width: 60px; height: 60px; }
 
-        body, html { margin: 0; padding: 0; background: var(--bg); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+        /* Navigation Labels */
+        .nav-bar { display: flex; justify-content: center; background: #fff; border-bottom: 3px solid var(--blue); }
+        .nav-item { padding: 15px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; border-right: 1px solid #eee; }
+        .nav-item:hover { background: var(--blue); color: white; }
 
-        /* 1. Breaking out of margins */
-        .full-wrapper { width: 100vw; display: flex; flex-direction: column; align-items: center; }
+        /* Latest Alert - Horizontal Moving */
+        .alert-zone { background: #fff3cd; padding: 10px; border-bottom: 1px solid #ffeeba; overflow: hidden; white-space: nowrap; }
+        .marquee-h { display: inline-block; animation: scroll-h 20s linear infinite; font-weight: bold; color: #856404; }
+        .blink { animation: blinker 1.2s linear infinite; color: red; margin-right: 10px; }
 
-        /* 2. Scrolling Alert Bar (Horizontal) */
-        .alert-ticker {
-            width: 100%;
-            background: #fff3cd;
-            border-bottom: 1px solid #ffeeba;
-            color: #856404;
-            padding: 10px 0;
-            overflow: hidden;
-            white-space: nowrap;
-            font-weight: bold;
-        }
-        .ticker-content {
-            display: inline-block;
-            animation: ticker 20s linear infinite;
-        }
-        .ticker-content span { margin-right: 50px; }
-        .blink { animation: blinker 1s linear infinite; color: red; }
+        /* Main Content Layout (Photos + Tasks) */
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; width: 100%; border-bottom: 1px solid #ddd; }
+        .grid-box { border-right: 1px solid #ddd; min-height: 300px; }
+        .box-title { background: #eee; padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd; text-align: center; }
 
-        @keyframes ticker { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+        /* Photo Scroller */
+        .photo-scroller { position: relative; height: 260px; overflow: hidden; }
+        .photo-scroller img { width: 100%; height: 100%; object-fit: contain; position: absolute; opacity: 0; transition: opacity 1s; }
+        .photo-scroller img.active { opacity: 1; }
+
+        /* Task Scroller - Vertical */
+        .task-window { height: 260px; overflow: hidden; position: relative; }
+        .task-move { position: absolute; width: 100%; animation: scroll-v 15s linear infinite; padding: 10px; }
+        .task-move:hover { animation-play-state: paused; }
+        .task-row { padding: 8px; border-bottom: 1px dotted #ccc; display: flex; align-items: center; }
+        .task-row::before { content: "■"; color: var(--blue); margin-right: 10px; font-size: 10px; }
+
+        /* Link Content Pop-up/View */
+        #content-view { padding: 20px; display: none; background: #fafafa; border-bottom: 2px solid var(--blue); }
+        .list-link { display: block; padding: 10px; margin: 5px 0; background: #fff; border: 1px solid #ddd; text-decoration: none; color: #333; }
+
+        @keyframes scroll-h { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        @keyframes scroll-v { 0% { top: 100%; } 100% { top: -100%; } }
         @keyframes blinker { 50% { opacity: 0; } }
-
-        /* 3. Main Navigation Grid (Menu Labels) */
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            width: 90%;
-            max-width: 1200px;
-            margin: 30px 0;
-        }
-        .menu-card {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: 0.3s;
-            border-top: 4px solid var(--primary);
-        }
-        .menu-card:hover { transform: translateY(-5px); background: var(--primary); color: white; }
-
-        /* 4. Content Display Area */
-        .content-view { width: 90%; max-width: 1200px; display: none; background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .link-item { display: block; padding: 12px; margin: 5px 0; background: #f8f9fa; border-radius: 5px; text-decoration: none; color: #333; font-weight: 500; border-left: 4px solid var(--primary); }
-
-        /* 5. Photos Area (Slider) */
-        .photo-section { width: 90%; max-width: 1200px; height: 400px; background: #000; border-radius: 12px; overflow: hidden; position: relative; margin-bottom: 30px; }
-        #photo-container img { width: 100%; height: 400px; object-fit: contain; display: none; }
-        #photo-container img.active { display: block; }
-
-        /* 6. Vertical Task Scroller */
-        .task-sidebar {
-            width: 90%;
-            max-width: 1200px;
-            background: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 50px;
-            border-left: 8px solid #34a853;
-        }
-        .task-window { height: 150px; overflow: hidden; position: relative; }
-        .task-list { position: absolute; width: 100%; animation: scrollUp 10s linear infinite; }
-        .task-list:hover { animation-play-state: paused; }
-        .task-item { padding: 10px; border-bottom: 1px solid #eee; color: #333; }
-
-        @keyframes scrollUp { 0% { top: 100%; } 100% { top: -100%; } }
-
-        @media (max-width: 600px) { .nav-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
 
-<div class="full-wrapper">
-    <div class="alert-ticker" id="alert-bar">
-        <div class="ticker-content" id="alert-text">Loading Alerts...</div>
-    </div>
+<table class="header-table">
+    <tr class="main-title">
+        <td colspan="4">Samagra Shiksha, Andhra Pradesh (With official Logo)<br>MANDAL EDUCATIONAL OFFICER, CHIMAKURTHY MANDAL OFFICIAL PORTAL</td>
+    </tr>
+    <tr>
+        <td>
+            <b>Andhra Pradesh CM</b><br>
+            <img id="head-cm-img" class="official-img" alt="CM Photo">
+            <span id="head-cm-name">Loading...</span>
+        </td>
+        <td>
+            <b>Present MEO-1</b><br>
+            <img id="head-meo1-img" class="official-img" alt="MEO 1">
+            <span id="head-meo1-name">Loading...</span>
+        </td>
+        <td>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Emblem_of_Andhra_Pradesh.svg" class="symbol-img"><br>
+            <b>Andhra Symbol</b>
+        </td>
+        <td>
+            <b>Education Minister</b><br>
+            <img id="head-min-img" class="official-img" alt="Minister Photo">
+            <span id="head-min-name">Loading...</span>
+        </td>
+    </tr>
+</table>
 
-    <div class="nav-grid">
-        <div class="menu-card" onclick="showSection('Home')">Home</div>
-        <div class="menu-card" onclick="showSection('Contact')">Contact</div>
-        <div class="menu-card" onclick="showSection('Important Links')">Important Links</div>
-        <div class="menu-card" onclick="showSection('UDISE')">UDISE</div>
-        <div class="menu-card" onclick="showSection('Statistics')">Statistics</div>
-        <div class="menu-card" onclick="showSection('Downloads')">Downloads</div>
-        <div class="menu-card" onclick="showSection('HM Login')">HM Login</div>
-    </div>
+<div class="nav-bar">
+    <div class="nav-item" onclick="showData('Home')">Home</div>
+    <div class="nav-item" onclick="showData('Contact')">Contact</div>
+    <div class="nav-item" onclick="showData('Important Links')">Important Links</div>
+    <div class="nav-item" onclick="showData('UDISE')">UDISE</div>
+    <div class="nav-item" onclick="showData('Statistics')">Statistics</div>
+    <div class="nav-item" onclick="showData('Downloads')">Downloads</div>
+    <div class="nav-item" onclick="showData('HM Login')">HM Login</div>
+</div>
 
-    <div id="content-view" class="content-view">
-        <h2 id="view-title" style="color:var(--primary)"></h2>
-        <div id="view-links"></div>
-    </div>
+<div id="content-view">
+    <h3 id="view-title"></h3>
+    <div id="view-list"></div>
+</div>
 
-    <div class="photo-section">
-        <div id="photo-container"></div>
-    </div>
+<div class="alert-zone">
+    <div class="marquee-h" id="alert-content">Loading Alerts...</div>
+</div>
 
-    <div class="task-sidebar">
-        <h3>Current Running Tasks</h3>
+<div class="main-grid">
+    <div class="grid-box">
+        <div class="box-title">Photo Scroller</div>
+        <div class="photo-scroller" id="photo-area"></div>
+    </div>
+    <div class="grid-box" style="border-right:0">
+        <div class="box-title">Current Running Tasks</div>
         <div class="task-window">
-            <div class="task-list" id="task-list"></div>
+            <div class="task-move" id="task-area"></div>
         </div>
     </div>
 </div>
 
 <script>
     const SHEET_ID = '1TVWIHBrWDw0lflCmooFEhYcCfQenM8mAVRHSYt_bFZ4';
-    const DATA_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-    let siteData = [];
+    const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+    let allData = [];
 
-    async function init() {
-        try {
-            const res = await fetch(DATA_URL);
-            const text = await res.text();
-            const json = JSON.parse(text.substr(47).slice(0, -2));
-            siteData = json.table.rows;
+    async function loadSite() {
+        const res = await fetch(URL);
+        const text = await res.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        allData = json.table.rows;
 
-            processAlerts();
-            processPhotos();
-            processTasks();
-        } catch (e) { console.error("Data Load Error", e); }
-    }
+        // Populate Header Photos/Names (Assumes Category 'Header')
+        updateHeader('CM', 'head-cm-name', 'head-cm-img');
+        updateHeader('MEO1', 'head-meo1-name', 'head-meo1-img');
+        updateHeader('Minister', 'head-min-name', 'head-min-img');
 
-    function processAlerts() {
-        const alerts = siteData.filter(r => r.c[0]?.v?.toLowerCase().includes('alert'));
-        const container = document.getElementById('alert-text');
-        container.innerHTML = alerts.map(r => `<span><b class="blink">NEW:</b> ${r.c[1]?.v}</span>`).join('');
-    }
+        // Populate Alert
+        const alerts = allData.filter(r => r.c[0]?.v === 'Latest Alert');
+        document.getElementById('alert-content').innerHTML = alerts.map(r => `<span class="blink">NEW:</span> ${r.c[1].v}`).join(' | ');
 
-    function processPhotos() {
-        const photos = siteData.filter(r => r.c[0]?.v?.toLowerCase().includes('photo'));
-        const container = document.getElementById('photo-container');
+        // Populate Photos
+        const photos = allData.filter(r => r.c[0]?.v === 'Photos');
+        const photoArea = document.getElementById('photo-area');
         photos.forEach((r, i) => {
             const img = document.createElement('img');
-            img.src = r.c[2]?.v; // Column C for link
-            if(i === 0) img.className = 'active';
-            container.appendChild(img);
+            img.src = r.c[2].v;
+            if(i===0) img.className = 'active';
+            photoArea.appendChild(img);
         });
-        
-        let current = 0;
-        setInterval(() => {
-            const imgs = container.querySelectorAll('img');
-            if(imgs.length < 2) return;
-            imgs[current].classList.remove('active');
-            current = (current + 1) % imgs.length;
-            imgs[current].classList.add('active');
-        }, 4000);
+        startSlider();
+
+        // Populate Tasks
+        const tasks = allData.filter(r => r.c[0]?.v === 'Current Running Tasks');
+        document.getElementById('task-area').innerHTML = tasks.map(r => `<div class="task-row">${r.c[1].v}</div>`).join('');
     }
 
-    function processTasks() {
-        const tasks = siteData.filter(r => r.c[0]?.v?.toLowerCase().includes('task'));
-        const container = document.getElementById('task-list');
-        container.innerHTML = tasks.map(r => `<div class="task-item">🔹 ${r.c[1]?.v}</div>`).join('');
+    function updateHeader(key, nameId, imgId) {
+        const row = allData.find(r => r.c[0]?.v === key);
+        if(row) {
+            document.getElementById(nameId).innerText = row.c[1].v;
+            document.getElementById(imgId).src = row.c[2].v;
+        }
     }
 
-    function showSection(label) {
+    function showData(category) {
         const view = document.getElementById('content-view');
-        const title = document.getElementById('view-title');
-        const linksArea = document.getElementById('view-links');
+        const list = document.getElementById('view-list');
+        const filtered = allData.filter(r => r.c[0]?.v === category);
         
-        const filtered = siteData.filter(r => r.c[0]?.v?.toLowerCase() === label.toLowerCase());
-        
-        title.innerText = label;
-        linksArea.innerHTML = filtered.map(r => `<a href="${r.c[2]?.v}" target="_blank" class="link-item">${r.c[1]?.v}</a>`).join('');
+        document.getElementById('view-title').innerText = category;
+        list.innerHTML = filtered.map(r => `<a href="${r.c[2]?.v || '#'}" target="_blank" class="list-link">${r.c[1].v}</a>`).join('');
         view.style.display = 'block';
-        view.scrollIntoView({behavior: "smooth"});
     }
 
-    init();
+    function startSlider() {
+        let current = 0;
+        const imgs = document.querySelectorAll('.photo-scroller img');
+        if(imgs.length > 1) {
+            setInterval(() => {
+                imgs[current].classList.remove('active');
+                current = (current + 1) % imgs.length;
+                imgs[current].classList.add('active');
+            }, 4000);
+        }
+    }
+
+    loadSite();
 </script>
 </body>
 </html>
