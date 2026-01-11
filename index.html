@@ -3,194 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latest Alerts | MEO OFFICE CHIMAKURTHY OFFICIAL WEBSITE</title>
+    <title>Advanced Admin Portal</title>
     <style>
         :root {
             --primary: #1a73e8;
-            --accent: #ff3d00;
-            --udise: #00c853;
-            --glass: rgba(255, 255, 255, 0.9);
+            --dark: #202124;
+            --accent: #d93025;
+            --bg: #f1f3f4;
         }
 
-        /* Forces full screen and removes all default margins */
-        body, html {
-            margin: 0;
-            padding: 0;
+        body, html { margin: 0; padding: 0; background: var(--bg); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+
+        /* 1. Breaking out of margins */
+        .full-wrapper { width: 100vw; display: flex; flex-direction: column; align-items: center; }
+
+        /* 2. Scrolling Alert Bar (Horizontal) */
+        .alert-ticker {
             width: 100%;
-            height: 100%;
-            background-color: #eef2f7;
-            font-family: 'Inter', -apple-system, sans-serif;
-            color: #202124;
+            background: #fff3cd;
+            border-bottom: 1px solid #ffeeba;
+            color: #856404;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            font-weight: bold;
         }
-
-        /* Modern Top Navigation */
-        .top-nav {
-            background: var(--primary);
-            color: white;
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+        .ticker-content {
+            display: inline-block;
+            animation: ticker 20s linear infinite;
         }
+        .ticker-content span { margin-right: 50px; }
+        .blink { animation: blinker 1s linear infinite; color: red; }
 
-        .top-nav h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; }
+        @keyframes ticker { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+        @keyframes blinker { 50% { opacity: 0; } }
 
-        /* The Centered Dashboard Area */
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 0 20px;
+        /* 3. Main Navigation Grid (Menu Labels) */
+        .nav-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px 0;
         }
-
-        /* Glass Cards */
-        .card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover { transform: translateY(-5px); }
-
-        .card-header {
+        .menu-card {
+            background: white;
+            border-radius: 8px;
             padding: 20px;
-            font-weight: 800;
             text-align: center;
-            border-bottom: 2px solid #f0f2f5;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: 0.3s;
+            border-top: 4px solid var(--primary);
         }
+        .menu-card:hover { transform: translateY(-5px); background: var(--primary); color: white; }
 
-        .imp-color { color: var(--primary); border-top: 10px solid var(--primary); border-radius: 20px 20px 0 0; }
-        .ud-color { color: var(--udise); border-top: 10px solid var(--udise); border-radius: 20px 20px 0 0; }
+        /* 4. Content Display Area */
+        .content-view { width: 90%; max-width: 1200px; display: none; background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .link-item { display: block; padding: 12px; margin: 5px 0; background: #f8f9fa; border-radius: 5px; text-decoration: none; color: #333; font-weight: 500; border-left: 4px solid var(--primary); }
 
-        .link-group { padding: 15px; }
+        /* 5. Photos Area (Slider) */
+        .photo-section { width: 90%; max-width: 1200px; height: 400px; background: #000; border-radius: 12px; overflow: hidden; position: relative; margin-bottom: 30px; }
+        #photo-container img { width: 100%; height: 400px; object-fit: contain; display: none; }
+        #photo-container img.active { display: block; }
 
-        /* Interactive Link Buttons */
-        .link-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 20px;
-            margin-bottom: 12px;
+        /* 6. Vertical Task Scroller */
+        .task-sidebar {
+            width: 90%;
+            max-width: 1200px;
             background: #fff;
-            border-radius: 12px;
-            text-decoration: none;
-            color: #444;
-            font-weight: 600;
-            border: 1px solid transparent;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-            transition: all 0.2s ease;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 50px;
+            border-left: 8px solid #34a853;
         }
+        .task-window { height: 150px; overflow: hidden; position: relative; }
+        .task-list { position: absolute; width: 100%; animation: scrollUp 10s linear infinite; }
+        .task-list:hover { animation-play-state: paused; }
+        .task-item { padding: 10px; border-bottom: 1px solid #eee; color: #333; }
 
-        .link-item:hover {
-            border-color: var(--primary);
-            background: #f1f7ff;
-            color: var(--primary);
-            padding-left: 25px;
-        }
+        @keyframes scrollUp { 0% { top: 100%; } 100% { top: -100%; } }
 
-        /* Animated New Badge */
-        .badge-new {
-            background: var(--accent);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 900;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 61, 0, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 61, 0, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 61, 0, 0); }
-        }
-
-        #sync-timer { font-size: 0.8rem; opacity: 0.8; }
-
-        @media (max-width: 600px) {
-            .dashboard-container { grid-template-columns: 1fr; margin: 20px auto; }
-            .top-nav h1 { font-size: 1.1rem; }
-        }
+        @media (max-width: 600px) { .nav-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
 
-<nav class="top-nav">
-    <h1>OFFICIAL PORTAL MEO OFFICE CHIMAKURTHY</h1>
-    <div id="sync-timer">Checking for updates...</div>
-</nav>
-
-<div class="dashboard-container" id="content-grid">
+<div class="full-wrapper">
+    <div class="alert-ticker" id="alert-bar">
+        <div class="ticker-content" id="alert-text">Loading Alerts...</div>
     </div>
 
+    <div class="nav-grid">
+        <div class="menu-card" onclick="showSection('Home')">Home</div>
+        <div class="menu-card" onclick="showSection('Contact')">Contact</div>
+        <div class="menu-card" onclick="showSection('Important Links')">Important Links</div>
+        <div class="menu-card" onclick="showSection('UDISE')">UDISE</div>
+        <div class="menu-card" onclick="showSection('Statistics')">Statistics</div>
+        <div class="menu-card" onclick="showSection('Downloads')">Downloads</div>
+        <div class="menu-card" onclick="showSection('HM Login')">HM Login</div>
+    </div>
+
+    <div id="content-view" class="content-view">
+        <h2 id="view-title" style="color:var(--primary)"></h2>
+        <div id="view-links"></div>
+    </div>
+
+    <div class="photo-section">
+        <div id="photo-container"></div>
+    </div>
+
+    <div class="task-sidebar">
+        <h3>Current Running Tasks</h3>
+        <div class="task-window">
+            <div class="task-list" id="task-list"></div>
+        </div>
+    </div>
+</div>
+
 <script>
-    // YOUR SPREADSHEET ID
     const SHEET_ID = '1TVWIHBrWDw0lflCmooFEhYcCfQenM8mAVRHSYt_bFZ4';
-    const JSON_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+    const DATA_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+    let siteData = [];
 
-    async function fetchData() {
+    async function init() {
         try {
-            const response = await fetch(JSON_URL);
-            const text = await response.text();
-            const data = JSON.parse(text.substr(47).slice(0, -2));
-            const rows = data.table.rows;
+            const res = await fetch(DATA_URL);
+            const text = await res.text();
+            const json = JSON.parse(text.substr(47).slice(0, -2));
+            siteData = json.table.rows;
 
-            let importantHTML = '';
-            let udiseHTML = '';
-
-            rows.forEach(r => {
-                if(!r.c[0] || !r.c[1]) return;
-                const category = r.c[0].v.toLowerCase();
-                const title = r.c[1].v;
-                const link = r.c[2] ? r.c[2].v : '#';
-                
-                const isNew = title.toLowerCase().includes('new') || category.includes('new');
-                const badge = isNew ? `<span class="badge-new">NEW</span>` : `<span>&rarr;</span>`;
-
-                const linkCard = `
-                    <a href="${link}" target="_blank" class="link-item">
-                        <span>${title}</span>
-                        ${badge}
-                    </a>`;
-
-                if(category.includes('important')) importantHTML += linkCard;
-                else udiseHTML += linkCard;
-            });
-
-            document.getElementById('content-grid').innerHTML = `
-                <div class="card">
-                    <div class="card-header imp-color">IMPORTANT LINKS</div>
-                    <div class="link-group">${importantHTML}</div>
-                </div>
-                <div class="card">
-                    <div class="card-header ud-color">UDISE LINKS</div>
-                    <div class="link-group">${udiseHTML}</div>
-                </div>
-            `;
-
-            document.getElementById('sync-timer').innerText = "Live: " + new Date().toLocaleTimeString();
-
-        } catch (error) {
-            document.getElementById('sync-timer').innerText = "Update Failed. Check Sheet Sharing.";
-        }
+            processAlerts();
+            processPhotos();
+            processTasks();
+        } catch (e) { console.error("Data Load Error", e); }
     }
 
-    // Load data on start
-    fetchData();
-    // Auto-refresh data every 5 minutes without reloading page
-    setInterval(fetchData, 300000);
-</script>
+    function processAlerts() {
+        const alerts = siteData.filter(r => r.c[0]?.v?.toLowerCase().includes('alert'));
+        const container = document.getElementById('alert-text');
+        container.innerHTML = alerts.map(r => `<span><b class="blink">NEW:</b> ${r.c[1]?.v}</span>`).join('');
+    }
 
+    function processPhotos() {
+        const photos = siteData.filter(r => r.c[0]?.v?.toLowerCase().includes('photo'));
+        const container = document.getElementById('photo-container');
+        photos.forEach((r, i) => {
+            const img = document.createElement('img');
+            img.src = r.c[2]?.v; // Column C for link
+            if(i === 0) img.className = 'active';
+            container.appendChild(img);
+        });
+        
+        let current = 0;
+        setInterval(() => {
+            const imgs = container.querySelectorAll('img');
+            if(imgs.length < 2) return;
+            imgs[current].classList.remove('active');
+            current = (current + 1) % imgs.length;
+            imgs[current].classList.add('active');
+        }, 4000);
+    }
+
+    function processTasks() {
+        const tasks = siteData.filter(r => r.c[0]?.v?.toLowerCase().includes('task'));
+        const container = document.getElementById('task-list');
+        container.innerHTML = tasks.map(r => `<div class="task-item">🔹 ${r.c[1]?.v}</div>`).join('');
+    }
+
+    function showSection(label) {
+        const view = document.getElementById('content-view');
+        const title = document.getElementById('view-title');
+        const linksArea = document.getElementById('view-links');
+        
+        const filtered = siteData.filter(r => r.c[0]?.v?.toLowerCase() === label.toLowerCase());
+        
+        title.innerText = label;
+        linksArea.innerHTML = filtered.map(r => `<a href="${r.c[2]?.v}" target="_blank" class="link-item">${r.c[1]?.v}</a>`).join('');
+        view.style.display = 'block';
+        view.scrollIntoView({behavior: "smooth"});
+    }
+
+    init();
+</script>
 </body>
 </html>
