@@ -5,181 +5,170 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEO Chimakurthy - Official Portal</title>
     <style>
-        :root { --ap-blue: #0056b3; --ap-gold: #ffcc00; --text: #202124; }
-        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #fff; color: var(--text); }
+        :root {
+            --ap-blue: #0056b3;
+            --ap-gold: #ffcc00;
+            --text-dark: #202124;
+            --bg-gray: #f4f7f6;
+        }
+
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: #fff; overflow-x: hidden; width: 100%; }
+
+        /* 1. Header Table (Color-Coded based on Mockup) */
+        .header-table { width: 100%; border-collapse: collapse; table-layout: fixed; text-align: center; }
+        .header-table td { border: 1px solid #999; vertical-align: middle; padding: 5px; font-weight: bold; font-size: 0.9rem; }
         
-        /* 1. Header Table Layout (Positional Conscious) */
-        .header-container { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        .header-container td { border: 1px solid #ccc; text-align: center; vertical-align: middle; padding: 5px; }
-        
-        .main-heading { background: #f1f3f4; font-weight: bold; font-size: 1.1rem; padding: 10px !important; }
-        .dept-logo { width: 100%; max-width: 150px; height: auto; }
-        .official-photo { width: 90px; height: 110px; object-fit: cover; border: 1px solid #ddd; margin-top: 5px; background: #eee; }
-        .state-emblem { width: 70px; height: 70px; }
+        .row-grey { background-color: #bbbbbb; height: 40px; }
+        .row-light-grey { background-color: #d9d9d9; height: 30px; }
+        .col-light-blue { background-color: #e2f0fe; width: 15%; }
+        .col-yellow { background-color: #ffff00; width: 15%; }
+        .col-blue-active { background-color: #3b82f6; color: black; }
+        .col-white { background-color: #ffffff; }
 
-        /* 2. Navigation Row */
-        .nav-bar { display: flex; background: #0056b3; color: white; border-bottom: 2px solid var(--ap-gold); flex-wrap: wrap; }
-        .nav-btn { flex: 1; padding: 15px 5px; text-align: center; cursor: pointer; font-weight: bold; font-size: 0.9rem; border-right: 1px solid rgba(255,255,255,0.2); transition: 0.3s; }
-        .nav-btn:hover { background: #003d7a; color: var(--ap-gold); }
+        .official-img { width: 90%; height: 110px; object-fit: contain; background: #eee; margin: 5px auto; display: block; }
+        .center-emblem { width: 60px; height: 60px; display: block; margin: 0 auto; }
 
-        /* 3. Latest Alert (Flashing/Moving) */
-        .alert-row { background: #fffde7; border-bottom: 1px solid #ffe082; padding: 8px; overflow: hidden; white-space: nowrap; }
-        .alert-move { display: inline-block; animation: scroll-alert 25s linear infinite; font-weight: bold; color: #c62828; }
-        .blink { animation: blinker 1s step-start infinite; color: #ff0000; font-weight: 900; margin-right: 10px; }
+        /* 2. Navigation Bar (Black background from Mockup) */
+        .nav-bar { display: flex; background: #000; color: white; border-top: 1px solid #555; }
+        .nav-item { flex: 1; padding: 15px 5px; text-align: center; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-right: 1px solid #333; transition: 0.3s; }
+        .nav-item:hover { background: #333; color: var(--ap-gold); }
 
-        /* 4. Content Area (Photos & Tasks Side-by-Side) */
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #ddd; }
-        .grid-cell { border-right: 1px solid #ddd; position: relative; height: 300px; overflow: hidden; }
-        .cell-title { background: #e8f0fe; padding: 10px; font-weight: bold; text-align: center; border-bottom: 1px solid #ddd; color: var(--ap-blue); }
+        /* 3. Latest Alert (Green background from Mockup) */
+        .alert-row { background: #c6e0b4; border-bottom: 2px solid #555; padding: 10px; overflow: hidden; white-space: nowrap; font-weight: bold; }
+        .alert-move { display: inline-block; animation: scroll-alert 20s linear infinite; }
+        .blink { animation: blinker 1s step-start infinite; color: #ff0000; margin-right: 10px; }
 
-        /* Photo Scroller */
-        .photo-frame { width: 100%; height: 260px; position: relative; }
-        .photo-frame img { width: 100%; height: 100%; object-fit: contain; position: absolute; opacity: 0; transition: opacity 1s; }
-        .photo-frame img.active { opacity: 1; }
+        /* 4. Photos Area (Grey background from Mockup) */
+        .photos-area { background: #adb9ca; min-height: 250px; position: relative; width: 100%; display: flex; justify-content: center; align-items: center; }
+        .photo-slider { width: 80%; height: 230px; position: relative; overflow: hidden; background: #000; border: 2px solid #fff; }
+        .photo-slider img { width: 100%; height: 100%; object-fit: contain; position: absolute; opacity: 0; transition: opacity 1s; }
+        .photo-slider img.active { opacity: 1; }
 
-        /* Task Scroller (Vertical) */
-        .task-frame { height: 260px; position: relative; overflow: hidden; }
-        .task-scroll { position: absolute; width: 100%; animation: scroll-task 15s linear infinite; }
-        .task-scroll:hover { animation-play-state: paused; }
-        .task-item { padding: 10px 15px; border-bottom: 1px dotted #ccc; display: flex; align-items: center; font-size: 0.95rem; }
-        .task-item::before { content: '●'; color: #34a853; margin-right: 10px; font-size: 12px; }
+        /* 5. Running Tasks (Peach background from Mockup) */
+        .tasks-area { background: #fce4d6; padding: 10px; border-top: 2px solid #555; font-weight: bold; }
+        .task-window { height: 100px; overflow: hidden; position: relative; margin-top: 5px; }
+        .task-list { position: absolute; width: 100%; animation: scroll-task 12s linear infinite; }
+        .task-item { padding: 8px; border-bottom: 1px dotted #888; display: flex; align-items: center; color: #333; }
+        .task-item::before { content: '➔'; color: var(--ap-blue); margin-right: 10px; }
 
-        /* Dynamic Content View (When menu clicked) */
-        #content-view { display: none; padding: 20px; background: #fafafa; border-bottom: 5px solid #0056b3; }
-        .data-link { display: block; padding: 12px; margin: 5px 0; background: white; border: 1px solid #eee; text-decoration: none; color: #333; border-radius: 4px; font-weight: 500; }
-        .data-link:hover { background: #e8f0fe; border-color: #0056b3; }
+        /* Content List View (Hidden until clicked) */
+        #content-view { display: none; padding: 20px; background: #f8f9fa; border-bottom: 4px solid var(--ap-blue); }
+        .data-link { display: block; padding: 12px; margin: 5px 0; background: white; border: 1px solid #ddd; text-decoration: none; color: #333; border-radius: 4px; font-weight: 600; }
+        .data-link:hover { border-color: var(--ap-blue); background: #eef2ff; }
 
+        /* Animations */
         @keyframes scroll-alert { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes scroll-task { 0% { top: 100%; } 100% { top: -100%; } }
         @keyframes blinker { 50% { opacity: 0; } }
+
+        @media (max-width: 600px) { .nav-bar { flex-wrap: wrap; } .nav-item { flex: 0 0 50%; border-bottom: 1px solid #333; } }
     </style>
 </head>
 <body>
 
-<table class="header-container">
-    <tr>
-        <td width="20%"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3a/Samagra_Shiksha_Logo.png/220px-Samagra_Shiksha_Logo.png" class="dept-logo"></td>
-        <td colspan="2" class="main-heading">
-            SAMAGRA SHIKSHA, ANDHRA PRADESH<br>
-            MANDAL EDUCATIONAL OFFICER, CHIMAKURTHY MANDAL OFFICIAL PORTAL
-        </td>
-        <td width="20%"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Emblem_of_Andhra_Pradesh.svg" class="state-emblem"></td>
+<table class="header-table">
+    <tr class="row-grey">
+        <td colspan="4">Samagra Shiksha, Andhra Pradesh (Add Link Later by the Admin)</td>
+    </tr>
+    <tr class="row-light-grey">
+        <td colspan="4">MANDAL EDUCATIONAL OFFICER, CHIMAKURTHY MANDAL OFFICIAL PORTAL</td>
     </tr>
     <tr>
-        <td>
-            <b>Hon'ble CM</b><br>
-            <img id="cm-pic" class="official-photo"><br>
-            <span id="cm-name">...</span>
+        <td rowspan="3" class="col-light-blue">Andhra Pradesh CM Photo with Name</td>
+        <td class="col-blue-active">Present MEO-1</td>
+        <td class="col-white" rowspan="3">
+            Andhra Pradesh Symbol<br>
+            (Add Link Later by the Admin)<br>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Emblem_of_Andhra_Pradesh.svg" class="center-emblem" alt="AP Symbol">
         </td>
-        <td>
-            <b>Present MEO-1</b><br>
-            <img id="meo-pic" class="official-photo"><br>
-            <span id="meo-name">...</span>
-        </td>
-        <td>
-            <b>Present MEO-2</b><br>
-            <img id="meo2-pic" class="official-photo"><br>
-            <span id="meo2-name">...</span>
-        </td>
-        <td>
-            <b>Education Minister</b><br>
-            <img id="min-pic" class="official-photo"><br>
-            <span id="min-name">...</span>
-        </td>
+        <td class="col-blue-active">Present MEO-1</td>
+        <td rowspan="3" class="col-yellow">Andhra Pradesh Education Minister Photo with name</td>
+    </tr>
+    <tr>
+        <td class="col-white">Photo (Add Link Later by the Admin)</td>
+        <td class="col-white">Photo (Add Link Later by the Admin)</td>
+    </tr>
+    <tr class="col-blue-active">
+        <td>Sri.DVL Narasimha Rao</td>
+        <td>Sri.K Sivaji</td>
     </tr>
 </table>
 
 <div class="nav-bar">
-    <div class="nav-btn" onclick="fetchMenu('Home')">HOME</div>
-    <div class="nav-btn" onclick="fetchMenu('Contact')">CONTACT</div>
-    <div class="nav-btn" onclick="fetchMenu('Important links')">IMPORTANT LINKS</div>
-    <div class="nav-btn" onclick="fetchMenu('UDISE')">UDISE</div>
-    <div class="nav-btn" onclick="fetchMenu('Statistics')">STATISTICS</div>
-    <div class="nav-btn" onclick="fetchMenu('Downloads')">DOWNLOADS</div>
-    <div class="nav-btn" onclick="fetchMenu('HM Login')">HM LOGIN</div>
+    <div class="nav-item" onclick="showSection('Home')">Home</div>
+    <div class="nav-item" onclick="showSection('Contact')">Contact</div>
+    <div class="nav-item" onclick="showSection('Important links')">Important links</div>
+    <div class="nav-item" onclick="showSection('UDISE')">UDISE</div>
+    <div class="nav-item" onclick="showSection('Statistics')">Statistics</div>
+    <div class="nav-item" onclick="showSection('Downloads')">Downloads</div>
+    <div class="nav-item" onclick="showSection('HM Login')">HM Login</div>
 </div>
 
 <div id="content-view">
-    <h3 id="view-title" style="margin-top:0"></h3>
+    <h3 id="view-title" style="margin:0; color:var(--ap-blue);"></h3>
+    <hr>
     <div id="view-list"></div>
 </div>
 
 <div class="alert-row">
-    <div class="alert-move" id="alert-box">Loading Latest Alerts...</div>
+    <div class="alert-move" id="alert-content">Loading Latest Alerts from Google Sheet...</div>
 </div>
 
-<div class="main-grid">
-    <div class="grid-cell">
-        <div class="cell-title">PHOTO SCROLLER</div>
-        <div class="photo-frame" id="photo-frame"></div>
-    </div>
-    <div class="grid-cell" style="border-right:0">
-        <div class="cell-title">CURRENT RUNNING TASKS</div>
-        <div class="task-frame">
-            <div class="task-scroll" id="task-box"></div>
+<div class="photos-area">
+    <div class="photo-slider" id="photo-slider">
         </div>
+</div>
+
+<div class="tasks-area">
+    <span>Current Running Tasks:</span>
+    <div class="task-window">
+        <div class="task-list" id="task-list"></div>
     </div>
 </div>
 
 <script>
-    const S_ID = '1TVWIHBrWDw0lflCmooFEhYcCfQenM8mAVRHSYt_bFZ4';
-    const G_URL = `https://docs.google.com/spreadsheets/d/${S_ID}/gviz/tq?tqx=out:json`;
-    let db = [];
+    const SHEET_ID = '1TVWIHBrWDw0lflCmooFEhYcCfQenM8mAVRHSYt_bFZ4';
+    const G_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+    let siteDatabase = [];
 
-    async function sync() {
-        const r = await fetch(G_URL);
-        const t = await r.text();
-        const j = JSON.parse(t.substr(47).slice(0, -2));
-        db = j.table.rows;
+    async function loadPortalData() {
+        try {
+            const res = await fetch(G_URL);
+            const text = await res.text();
+            const json = JSON.parse(text.substr(47).slice(0, -2));
+            siteDatabase = json.table.rows;
 
-        // Update Officials (Based on Col A: CM, MEO1, MEO2, Minister)
-        setOfficial('CM', 'cm-name', 'cm-pic');
-        setOfficial('MEO1', 'meo-name', 'meo-pic');
-        setOfficial('MEO2', 'meo2-name', 'meo2-pic');
-        setOfficial('Minister', 'min-name', 'min-pic');
-
-        // Update Alerts
-        const alerts = db.filter(x => x.c[0]?.v === 'Latest Alert');
-        document.getElementById('alert-box').innerHTML = alerts.map(x => `<span class="blink">NEW:</span> ${x.c[1].v}`).join(' &nbsp; | &nbsp; ');
-
-        // Update Photos (Col C for URLs)
-        const photos = db.filter(x => x.c[0]?.v === 'Photos');
-        const frame = document.getElementById('photo-frame');
-        photos.forEach((x, i) => {
-            const img = document.createElement('img');
-            img.src = x.c[2].v;
-            if(i === 0) img.className = 'active';
-            frame.appendChild(img);
-        });
-        initSlider();
-
-        // Update Tasks (Col B for text)
-        const tasks = db.filter(x => x.c[0]?.v === 'Current Running Tasks');
-        document.getElementById('task-box').innerHTML = tasks.map(x => `<div class="task-item">${x.c[1].v}</div>`).join('');
-    }
-
-    function setOfficial(key, nameId, imgId) {
-        const row = db.find(x => x.c[0]?.v === key);
-        if(row) {
-            document.getElementById(nameId).innerText = row.c[1].v;
-            document.getElementById(imgId).src = row.c[2].v;
+            // Load Dynamic Sections
+            renderAlerts();
+            renderPhotos();
+            renderTasks();
+        } catch (e) {
+            console.error("Portal Data Sync Failed", e);
         }
     }
 
-    function fetchMenu(cat) {
-        const view = document.getElementById('content-view');
-        const list = document.getElementById('view-list');
-        const items = db.filter(x => x.c[0]?.v?.toLowerCase() === cat.toLowerCase());
-        
-        document.getElementById('view-title').innerText = cat;
-        list.innerHTML = items.map(x => `<a href="${x.c[2]?.v || '#'}" target="_blank" class="data-link">${x.c[1].v}</a>`).join('');
-        view.style.display = 'block';
-        window.scrollTo({ top: 200, behavior: 'smooth' });
+    function renderAlerts() {
+        const alerts = siteDatabase.filter(r => r.c[0]?.v === 'Latest Alert');
+        const container = document.getElementById('alert-content');
+        if(alerts.length > 0) {
+            container.innerHTML = alerts.map(r => `<span class="blink">LATEST:</span> ${r.c[1]?.v || ''}`).join(' &nbsp; | &nbsp; ');
+        }
     }
 
-    function initSlider() {
+    function renderPhotos() {
+        const photos = siteDatabase.filter(r => r.c[0]?.v === 'Photos');
+        const slider = document.getElementById('photo-slider');
+        photos.forEach((r, i) => {
+            if(r.c[2]?.v) {
+                const img = document.createElement('img');
+                img.src = r.c[2].v;
+                if(i === 0) img.className = 'active';
+                slider.appendChild(img);
+            }
+        });
+        
         let current = 0;
-        const imgs = document.querySelectorAll('.photo-frame img');
+        const imgs = slider.querySelectorAll('img');
         if(imgs.length > 1) {
             setInterval(() => {
                 imgs[current].classList.remove('active');
@@ -189,7 +178,24 @@
         }
     }
 
-    sync();
+    function renderTasks() {
+        const tasks = siteDatabase.filter(r => r.c[0]?.v === 'Current Running Tasks');
+        const list = document.getElementById('task-list');
+        list.innerHTML = tasks.map(r => `<div class="task-item">${r.c[1]?.v || ''}</div>`).join('');
+    }
+
+    function showSection(category) {
+        const view = document.getElementById('content-view');
+        const list = document.getElementById('view-list');
+        const filtered = siteDatabase.filter(r => r.c[0]?.v?.trim().toLowerCase() === category.toLowerCase());
+        
+        document.getElementById('view-title').innerText = category.toUpperCase();
+        list.innerHTML = filtered.map(r => `<a href="${r.c[2]?.v || '#'}" target="_blank" class="data-link">${r.c[1]?.v || 'Untitled Link'}</a>`).join('');
+        view.style.display = 'block';
+        window.scrollTo({ top: 150, behavior: 'smooth' });
+    }
+
+    loadPortalData();
 </script>
 
 </body>
