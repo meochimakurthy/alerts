@@ -8,14 +8,13 @@
         :root {
             --primary: #0056b3;
             --accent: #ffcc00;
-            --bg: #f4f7f6;
             --header-grey: #bbbbbb;
             --header-light: #d9d9d9;
         }
 
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: #fff; width: 100%; overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; width: 100%; overflow-x: hidden; }
 
-        /* 1. POSITIONAL HEADER (Per Outline) */
+        /* HEADER LAYOUT PER MOCKUP */
         .header-table { width: 100%; border-collapse: collapse; text-align: center; table-layout: fixed; }
         .header-table td { border: 1px solid #999; padding: 5px; font-weight: bold; font-size: 0.85rem; vertical-align: middle; }
         
@@ -25,57 +24,47 @@
         .col-yellow { background: #ffff00; }
         .col-active { background: #3b82f6; color: white; }
         
-        .off-img { width: 85px; height: 105px; object-fit: cover; background: #eee; margin: 5px auto; display: block; border: 1px solid #999; }
+        .off-img { 
+            width: 85px; height: 105px; object-fit: cover; background: #eee; 
+            margin: 5px auto; display: block; border: 1px solid #999;
+            opacity: 0; transition: opacity 0.5s; /* Smooth fade-in */
+        }
         .symbol { width: 60px; height: 60px; }
 
-        /* 2. NAVIGATION WITH DROPDOWNS */
+        /* NAVIGATION WITH DROPDOWNS */
         .nav-bar { display: flex; background: #000; color: white; position: relative; z-index: 1000; }
-        .nav-item { 
-            flex: 1; position: relative; padding: 15px 5px; text-align: center; 
-            cursor: pointer; font-weight: bold; font-size: 0.85rem; border-right: 1px solid #333; 
-        }
+        .nav-item { flex: 1; position: relative; padding: 15px 5px; text-align: center; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-right: 1px solid #333; }
         .nav-item:hover { background: #333; color: var(--accent); }
 
-        /* Dropdown Menu Styling */
         .dropdown-content {
             display: none; position: absolute; top: 100%; left: 0; width: 250px;
             background: #ffffff; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
             border-top: 3px solid var(--primary); list-style: none; padding: 0; margin: 0; text-align: left;
         }
         .nav-item:hover .dropdown-content { display: block; }
-        .dropdown-content li a {
-            display: block; padding: 12px 15px; text-decoration: none;
-            color: #333; border-bottom: 1px solid #eee; font-size: 0.8rem;
-        }
+        .dropdown-content li a { display: block; padding: 12px 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; font-size: 0.8rem; }
         .dropdown-content li a:hover { background: #f1f3f4; color: var(--primary); }
 
-        /* 3. ANIMATED ALERTS (Green) */
+        /* ALERTS */
         .alert-row { background: #c6e0b4; padding: 10px; overflow: hidden; white-space: nowrap; border-bottom: 2px solid #555; }
         .alert-move { display: inline-block; animation: scroll-h 25s linear infinite; font-weight: bold; }
         .blink { animation: blinker 1s step-start infinite; color: red; margin-right: 10px; }
 
-        /* 4. PHOTO SCROLLER (Grey) */
+        /* PHOTO SCROLLER */
         .photo-section { background: #adb9ca; padding: 20px 0; display: flex; justify-content: center; }
         .slider-box { width: 80%; height: 250px; background: #000; overflow: hidden; position: relative; border: 3px solid #fff; }
         .slider-box img { width: 100%; height: 100%; object-fit: contain; position: absolute; opacity: 0; transition: opacity 1s; }
         .slider-box img.active { opacity: 1; }
 
-        /* 5. RUNNING TASKS (Peach) */
+        /* TASKS */
         .task-section { background: #fce4d6; padding: 15px; border-top: 2px solid #555; font-weight: bold; }
         .task-window { height: 120px; overflow: hidden; position: relative; margin-top: 10px; background: rgba(255,255,255,0.3); border-radius: 5px; }
         .task-list { position: absolute; width: 100%; animation: scroll-v 15s linear infinite; }
-        .task-list:hover { animation-play-state: paused; }
         .task-item { padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.1); color: #222; font-size: 0.9rem; }
 
         @keyframes scroll-h { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
         @keyframes scroll-v { 0% { top: 100%; } 100% { top: -100%; } }
         @keyframes blinker { 50% { opacity: 0; } }
-
-        @media (max-width: 768px) {
-            .nav-bar { flex-wrap: wrap; }
-            .nav-item { flex: 0 0 50%; }
-            .dropdown-content { width: 100vw; position: static; box-shadow: none; }
-        }
     </style>
 </head>
 <body>
@@ -126,7 +115,7 @@
 </div>
 
 <div class="alert-row">
-    <div class="alert-move" id="alert-content">Loading Updates...</div>
+    <div class="alert-move" id="alert-content">Loading...</div>
 </div>
 
 <div class="photo-section">
@@ -143,53 +132,66 @@
 <script>
     const SHEET_ID = '1TVWIHBrWDw0lflCmooFEhYcCfQenM8mAVRHSYt_bFZ4';
     const G_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-    let siteData = [];
 
     async function initPortal() {
-        const res = await fetch(G_URL);
-        const text = await res.text();
-        const json = JSON.parse(text.substr(47).slice(0, -2));
-        siteData = json.table.rows;
+        try {
+            const res = await fetch(G_URL);
+            const text = await res.text();
+            const json = JSON.parse(text.substr(47).slice(0, -2));
+            const data = json.table.rows;
 
-        // 1. Set Officials
-        setProfile('CM', 'cm-name', 'cm-pic');
-        setProfile('Minister', 'min-name', 'min-pic');
-        setProfile('MEO1', 'meo1-name', 'meo1-pic');
-        setProfile('MEO2', 'meo2-name', 'meo2-pic');
+            // 1. SET OFFICIALS WITH RELIABLE LOADING
+            loadImg('CM', 'cm-name', 'cm-pic', data);
+            loadImg('Minister', 'min-name', 'min-pic', data);
+            loadImg('MEO1', 'meo1-name', 'meo1-pic', data);
+            loadImg('MEO2', 'meo2-name', 'meo2-pic', data);
 
-        // 2. Populate Dropdowns
-        const categories = ['Contact', 'Important links', 'UDISE', 'Statistics', 'Downloads', 'HM Login'];
-        categories.forEach(cat => {
-            const items = siteData.filter(r => r.c[0]?.v === cat);
-            const drop = document.getElementById(`drop-${cat}`);
-            drop.innerHTML = items.map(r => `<li><a href="${r.c[2]?.v || '#'}" target="_blank">${r.c[1]?.v}</a></li>`).join('');
-        });
+            // 2. POPULATE DROPDOWNS
+            ['Contact', 'Important links', 'UDISE', 'Statistics', 'Downloads', 'HM Login'].forEach(cat => {
+                const items = data.filter(r => r.c[0]?.v === cat);
+                document.getElementById(`drop-${cat}`).innerHTML = items.map(r => `<li><a href="${r.c[2]?.v || '#'}" target="_blank">${r.c[1]?.v}</a></li>`).join('');
+            });
 
-        // 3. Alerts
-        const alerts = siteData.filter(r => r.c[0]?.v === 'Latest Alert');
-        document.getElementById('alert-content').innerHTML = alerts.map(r => `<span class="blink">NEW:</span> ${r.c[1].v}`).join(' | ');
+            // 3. ALERTS
+            const alerts = data.filter(r => r.c[0]?.v === 'Latest Alert');
+            document.getElementById('alert-content').innerHTML = alerts.map(r => `<span class="blink">NEW:</span> ${r.c[1]?.v || ''}`).join(' | ');
 
-        // 4. Photos
-        const photos = siteData.filter(r => r.c[0]?.v === 'Photos');
-        const slider = document.getElementById('main-slider');
-        photos.forEach((r, i) => {
-            const img = document.createElement('img');
-            img.src = r.c[2].v;
-            if(i===0) img.className = 'active';
-            slider.appendChild(img);
-        });
-        startSlider();
+            // 4. PHOTOS
+            const photos = data.filter(r => r.c[0]?.v === 'Photos');
+            const slider = document.getElementById('main-slider');
+            photos.forEach((r, i) => {
+                if(r.c[2]?.v) {
+                    const img = document.createElement('img');
+                    img.src = r.c[2].v;
+                    if(i===0) img.className = 'active';
+                    img.onload = () => img.style.opacity = "1";
+                    slider.appendChild(img);
+                }
+            });
+            startSlider();
 
-        // 5. Tasks
-        const tasks = siteData.filter(r => r.c[0]?.v === 'Current Running Tasks');
-        document.getElementById('task-list').innerHTML = tasks.map(r => `<div class="task-item">➔ ${r.c[1].v}</div>`).join('');
+            // 5. TASKS
+            const tasks = data.filter(r => r.c[0]?.v === 'Current Running Tasks');
+            document.getElementById('task-list').innerHTML = tasks.map(r => `<div class="task-item">➔ ${r.c[1]?.v || ''}</div>`).join('');
+
+        } catch (e) { console.error(e); }
     }
 
-    function setProfile(cat, nameId, imgId) {
-        const row = siteData.find(r => r.c[0]?.v === cat);
+    function loadImg(cat, nameId, imgId, data) {
+        const row = data.find(r => r.c[0]?.v === cat);
         if(row) {
-            document.getElementById(nameId).innerText = row.c[1].v;
-            document.getElementById(imgId).src = row.c[2].v;
+            document.getElementById(nameId).innerText = row.c[1]?.v || '';
+            const img = document.getElementById(imgId);
+            const rawUrl = row.c[2]?.v || '';
+            
+            // Critical fix for Google Drive links
+            img.src = rawUrl.replace('file/d/', 'uc?export=view&id=').replace('/view?usp=sharing', '');
+            img.onload = () => img.style.opacity = "1";
+            img.onerror = () => {
+                console.warn(`Drive link failed for ${cat}, trying alternate...`);
+                img.src = "https://via.placeholder.com/85x105?text=Update+Photo";
+                img.style.opacity = "1";
+            };
         }
     }
 
