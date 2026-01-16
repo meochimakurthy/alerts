@@ -3,212 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEO Chimakurthy Official Portal</title>
+    <title>MEO Chimakurthy Portal</title>
     <style>
-        :root {
-            --primary: #0056b3;
-            --accent: #ffcc00;
-            --header-grey: #bbbbbb;
-            --header-light: #d9d9d9;
-        }
-
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; width: 100%; overflow-x: hidden; }
-
-        /* HEADER LAYOUT PER MOCKUP */
+        :root { --p: #0056b3; --a: #ffcc00; --g1: #bbbbbb; --g2: #d9d9d9; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #fff; }
+        
+        /* 1. HEADER LAYOUT */
         .header-table { width: 100%; border-collapse: collapse; text-align: center; table-layout: fixed; }
-        .header-table td { border: 1px solid #999; padding: 5px; font-weight: bold; font-size: 0.85rem; vertical-align: middle; }
+        .header-table td { border: 1px solid #999; padding: 5px; font-weight: bold; font-size: 0.8rem; }
+        .row-1 { background: var(--g1); height: 40px; }
+        .row-2 { background: var(--g2); height: 30px; }
+        .c-blue { background: #e2f0fe; }
+        .c-yellow { background: #ffff00; }
+        .c-act { background: #3b82f6; color: white; }
+        .off-img { width: 85px; height: 105px; object-fit: cover; background: #ccc; border: 1px solid #999; display: block; margin: 5px auto; }
+
+        /* 2. NAVIGATION & DROPDOWNS */
+        .nav-bar { display: flex; background: #000; color: white; position: relative; z-index: 9999; }
+        .nav-item { flex: 1; padding: 15px 5px; text-align: center; cursor: pointer; font-size: 0.8rem; border-right: 1px solid #333; position: relative; }
+        .nav-item:hover { background: #333; color: var(--a); }
         
-        .row-ss { background: var(--header-grey); height: 40px; }
-        .row-portal { background: var(--header-light); height: 30px; }
-        .col-blue { background: #e2f0fe; }
-        .col-yellow { background: #ffff00; }
-        .col-active { background: #3b82f6; color: white; }
+        .drop { 
+            display: none; position: absolute; top: 100%; left: 0; width: 220px; 
+            background: white; color: #333; list-style: none; padding: 0; margin: 0; 
+            text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border-top: 3px solid var(--p); 
+        }
+        .nav-item:hover .drop { display: block; }
+        .drop li a { display: block; padding: 10px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; font-size: 0.75rem; }
+        .drop li a:hover { background: #f1f3f4; color: var(--p); }
+
+        /* 3. ALERTS & CONTENT */
+        .alert-bg { background: #c6e0b4; padding: 10px; overflow: hidden; white-space: nowrap; border-bottom: 2px solid #555; font-weight: bold; }
+        .marquee { display: inline-block; animation: h-scroll 25s linear infinite; }
+        .photo-bg { background: #adb9ca; padding: 20px 0; display: flex; justify-content: center; }
+        .slider { width: 80%; height: 250px; background: #000; border: 2px solid #fff; position: relative; overflow: hidden; }
+        .slider img { width: 100%; height: 100%; object-fit: contain; position: absolute; opacity: 0; transition: opacity 1s; }
+        .slider img.active { opacity: 1; }
+        .task-bg { background: #fce4d6; padding: 15px; border-top: 2px solid #555; font-weight: bold; }
+        .task-win { height: 120px; overflow: hidden; position: relative; margin-top: 5px; }
+        .task-list { position: absolute; width: 100%; animation: v-scroll 15s linear infinite; }
         
-        .off-img { 
-            width: 85px; height: 105px; object-fit: cover; background: #eee; 
-            margin: 5px auto; display: block; border: 1px solid #999;
-            opacity: 0; transition: opacity 0.5s; /* Smooth fade-in */
-        }
-        .symbol { width: 60px; height: 60px; }
-
-        /* NAVIGATION WITH DROPDOWNS */
-        .nav-bar { display: flex; background: #000; color: white; position: relative; z-index: 1000; }
-        .nav-item { flex: 1; position: relative; padding: 15px 5px; text-align: center; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-right: 1px solid #333; }
-        .nav-item:hover { background: #333; color: var(--accent); }
-
-        .dropdown-content {
-            display: none; position: absolute; top: 100%; left: 0; width: 250px;
-            background: #ffffff; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            border-top: 3px solid var(--primary); list-style: none; padding: 0; margin: 0; text-align: left;
-        }
-        .nav-item:hover .dropdown-content { display: block; }
-        .dropdown-content li a { display: block; padding: 12px 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; font-size: 0.8rem; }
-        .dropdown-content li a:hover { background: #f1f3f4; color: var(--primary); }
-
-        /* ALERTS */
-        .alert-row { background: #c6e0b4; padding: 10px; overflow: hidden; white-space: nowrap; border-bottom: 2px solid #555; }
-        .alert-move { display: inline-block; animation: scroll-h 25s linear infinite; font-weight: bold; }
-        .blink { animation: blinker 1s step-start infinite; color: red; margin-right: 10px; }
-
-        /* PHOTO SCROLLER */
-        .photo-section { background: #adb9ca; padding: 20px 0; display: flex; justify-content: center; }
-        .slider-box { width: 80%; height: 250px; background: #000; overflow: hidden; position: relative; border: 3px solid #fff; }
-        .slider-box img { width: 100%; height: 100%; object-fit: contain; position: absolute; opacity: 0; transition: opacity 1s; }
-        .slider-box img.active { opacity: 1; }
-
-        /* TASKS */
-        .task-section { background: #fce4d6; padding: 15px; border-top: 2px solid #555; font-weight: bold; }
-        .task-window { height: 120px; overflow: hidden; position: relative; margin-top: 10px; background: rgba(255,255,255,0.3); border-radius: 5px; }
-        .task-list { position: absolute; width: 100%; animation: scroll-v 15s linear infinite; }
-        .task-item { padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.1); color: #222; font-size: 0.9rem; }
-
-        @keyframes scroll-h { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
-        @keyframes scroll-v { 0% { top: 100%; } 100% { top: -100%; } }
+        @keyframes h-scroll { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+        @keyframes v-scroll { 0% { top: 100%; } 100% { top: -100%; } }
         @keyframes blinker { 50% { opacity: 0; } }
+        .blink { animation: blinker 1s step-start infinite; color: red; }
     </style>
 </head>
 <body>
 
 <table class="header-table">
-    <tr class="row-ss">
-        <td colspan="5">Samagra Shiksha, Andhra Pradesh</td>
-    </tr>
-    <tr class="row-portal">
-        <td colspan="5">MANDAL EDUCATIONAL OFFICER, CHIMAKURTHY MANDAL OFFICIAL PORTAL</td>
-    </tr>
+    <tr class="row-1"><td colspan="5">Samagra Shiksha, Andhra Pradesh</td></tr>
+    <tr class="row-2"><td colspan="5">MANDAL EDUCATIONAL OFFICER, CHIMAKURTHY MANDAL OFFICIAL PORTAL</td></tr>
     <tr>
-        <td rowspan="3" class="col-blue">
-            AP CM Photo<br>
-            <img id="cm-pic" class="off-img">
-            <span id="cm-name">...</span>
-        </td>
-        <td class="col-active">Present MEO-1</td>
-        <td rowspan="3">
-            Andhra Symbol<br>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Emblem_of_Andhra_Pradesh.svg" class="symbol" alt="AP Symbol">
-        </td>
-        <td class="col-active">Present MEO-1</td>
-        <td rowspan="3" class="col-yellow">
-            Education Minister<br>
-            <img id="min-pic" class="off-img">
-            <span id="min-name">...</span>
-        </td>
+        <td rowspan="3" class="c-blue">AP CM<br><img id="img-CM" class="off-img"><span id="txt-CM">...</span></td>
+        <td class="c-act">Present MEO-1</td>
+        <td rowspan="3"><img id="img-Symbol" src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Emblem_of_Andhra_Pradesh.svg" style="width:50px;"><br>AP Symbol</td>
+        <td class="c-act">Present MEO-2</td>
+        <td rowspan="3" class="c-yellow">Education Minister<br><img id="img-Minister" class="off-img"><span id="txt-Minister">...</span></td>
     </tr>
-    <tr>
-        <td><img id="meo1-pic" class="off-img"></td>
-        <td><img id="meo2-pic" class="off-img"></td>
-    </tr>
-    <tr class="col-active">
-        <td id="meo1-name">...</td>
-        <td id="meo2-name">...</td>
-    </tr>
+    <tr><td><img id="img-MEO1" class="off-img"></td><td><img id="img-MEO2" class="off-img"></td></tr>
+    <tr class="c-act"><td id="txt-MEO1">...</td><td id="txt-MEO2">...</td></tr>
 </table>
 
 <div class="nav-bar">
     <div class="nav-item">HOME</div>
-    <div class="nav-item">CONTACT <ul class="dropdown-content" id="drop-Contact"></ul></div>
-    <div class="nav-item">IMPORTANT LINKS <ul class="dropdown-content" id="drop-Important links"></ul></div>
-    <div class="nav-item">UDISE <ul class="dropdown-content" id="drop-UDISE"></ul></div>
-    <div class="nav-item">STATISTICS <ul class="dropdown-content" id="drop-Statistics"></ul></div>
-    <div class="nav-item">DOWNLOADS <ul class="dropdown-content" id="drop-Downloads"></ul></div>
-    <div class="nav-item">HM LOGIN <ul class="dropdown-content" id="drop-HM Login"></ul></div>
+    <div class="nav-item">CONTACT<ul class="drop" id="d-Contact"></ul></div>
+    <div class="nav-item">IMPORTANT LINKS<ul class="drop" id="d-Importantlinks"></ul></div>
+    <div class="nav-item">UDISE<ul class="drop" id="d-UDISE"></ul></div>
+    <div class="nav-item">STATISTICS<ul class="drop" id="d-Statistics"></ul></div>
+    <div class="nav-item">DOWNLOADS<ul class="drop" id="d-Downloads"></ul></div>
+    <div class="nav-item">HM LOGIN<ul class="drop" id="d-HMLogin"></ul></div>
 </div>
 
-<div class="alert-row">
-    <div class="alert-move" id="alert-content">Loading...</div>
-</div>
-
-<div class="photo-section">
-    <div class="slider-box" id="main-slider"></div>
-</div>
-
-<div class="task-section">
-    <span>Current Running Tasks:</span>
-    <div class="task-window">
-        <div class="task-list" id="task-list"></div>
-    </div>
-</div>
+<div class="alert-bg"><div class="marquee" id="alert-box">Loading Data...</div></div>
+<div class="photo-bg"><div class="slider" id="slider-box"></div></div>
+<div class="task-bg">Running Tasks:<div class="task-win"><div class="task-list" id="task-box"></div></div></div>
 
 <script>
-    const SHEET_ID = '1TVWIHBrWDw0lflCmooFEhYcCfQenM8mAVRHSYt_bFZ4';
-    const G_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+    const S_ID = '1TVWIHBrWDw0lflCmooFEhYcCfQenM8mAVRHSYt_bFZ4';
+    const G_URL = `https://docs.google.com/spreadsheets/d/${S_ID}/gviz/tq?tqx=out:json`;
 
-    async function initPortal() {
+    async function start() {
         try {
             const res = await fetch(G_URL);
             const text = await res.text();
             const json = JSON.parse(text.substr(47).slice(0, -2));
-            const data = json.table.rows;
+            const db = json.table.rows;
 
-            // 1. SET OFFICIALS WITH RELIABLE LOADING
-            loadImg('CM', 'cm-name', 'cm-pic', data);
-            loadImg('Minister', 'min-name', 'min-pic', data);
-            loadImg('MEO1', 'meo1-name', 'meo1-pic', data);
-            loadImg('MEO2', 'meo2-name', 'meo2-pic', data);
+            // Helper to clean Category names (removes spaces and makes lowercase)
+            const clean = (str) => str ? str.toString().toLowerCase().replace(/\s+/g, '') : '';
 
-            // 2. POPULATE DROPDOWNS
-            ['Contact', 'Important links', 'UDISE', 'Statistics', 'Downloads', 'HM Login'].forEach(cat => {
-                const items = data.filter(r => r.c[0]?.v === cat);
-                document.getElementById(`drop-${cat}`).innerHTML = items.map(r => `<li><a href="${r.c[2]?.v || '#'}" target="_blank">${r.c[1]?.v}</a></li>`).join('');
+            // 1. OFFICIALS & SYMBOL
+            ['CM', 'Minister', 'MEO1', 'MEO2', 'Symbol'].forEach(cat => {
+                const r = db.find(x => clean(x.c[0]?.v) === clean(cat));
+                if(r) {
+                    if(cat !== 'Symbol') document.getElementById('txt-'+cat).innerText = r.c[1]?.v || '';
+                    const img = document.getElementById('img-'+cat);
+                    let url = r.c[2]?.v || '';
+                    if(url.includes('drive.google.com')){
+                        const id = url.split('id=')[1] || url.split('/d/')[1].split('/')[0];
+                        url = `https://lh3.googleusercontent.com/d/${id}`;
+                    }
+                    if(url) img.src = url;
+                }
+            });
+
+            // 2. DROPDOWNS (Smart Matching)
+            const menuCats = ['Contact', 'Importantlinks', 'UDISE', 'Statistics', 'Downloads', 'HMLogin'];
+            menuCats.forEach(mc => {
+                const items = db.filter(x => clean(x.c[0]?.v) === mc.toLowerCase());
+                const drop = document.getElementById('d-' + mc);
+                if(drop) drop.innerHTML = items.map(i => `<li><a href="${i.c[2]?.v || '#'}" target="_blank">${i.c[1]?.v || 'No Label'}</a></li>`).join('');
             });
 
             // 3. ALERTS
-            const alerts = data.filter(r => r.c[0]?.v === 'Latest Alert');
-            document.getElementById('alert-content').innerHTML = alerts.map(r => `<span class="blink">NEW:</span> ${r.c[1]?.v || ''}`).join(' | ');
+            const alerts = db.filter(x => clean(x.c[0]?.v) === 'latestalert');
+            document.getElementById('alert-box').innerHTML = alerts.map(x => `<span class="blink">NEW:</span> ${x.c[1]?.v}`).join(' &nbsp; | &nbsp; ');
 
-            // 4. PHOTOS
-            const photos = data.filter(r => r.c[0]?.v === 'Photos');
-            const slider = document.getElementById('main-slider');
-            photos.forEach((r, i) => {
-                if(r.c[2]?.v) {
-                    const img = document.createElement('img');
-                    img.src = r.c[2].v;
-                    if(i===0) img.className = 'active';
-                    img.onload = () => img.style.opacity = "1";
-                    slider.appendChild(img);
+            // 4. PHOTO SLIDER
+            const photos = db.filter(x => clean(x.c[0]?.v) === 'photos');
+            const sBox = document.getElementById('slider-box');
+            photos.forEach((p, i) => {
+                const im = document.createElement('img');
+                let u = p.c[2]?.v;
+                if(u && u.includes('drive.google.com')){
+                    const id = u.split('id=')[1] || u.split('/d/')[1].split('/')[0];
+                    u = `https://lh3.googleusercontent.com/d/${id}`;
                 }
+                im.src = u;
+                if(i===0) im.className='active';
+                sBox.appendChild(im);
             });
-            startSlider();
+            let cur = 0;
+            setInterval(() => {
+                const imgs = sBox.querySelectorAll('img');
+                if(imgs.length < 2) return;
+                imgs[cur].classList.remove('active');
+                cur = (cur + 1) % imgs.length;
+                imgs[cur].classList.add('active');
+            }, 4000);
 
             // 5. TASKS
-            const tasks = data.filter(r => r.c[0]?.v === 'Current Running Tasks');
-            document.getElementById('task-list').innerHTML = tasks.map(r => `<div class="task-item">➔ ${r.c[1]?.v || ''}</div>`).join('');
+            const tasks = db.filter(x => clean(x.c[0]?.v) === 'currentrunningtasks');
+            document.getElementById('task-box').innerHTML = tasks.map(x => `<div style="padding:10px; border-bottom:1px solid #ddd;">➔ ${x.c[1]?.v}</div>`).join('');
 
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Sync Error:", e); }
     }
-
-    function loadImg(cat, nameId, imgId, data) {
-        const row = data.find(r => r.c[0]?.v === cat);
-        if(row) {
-            document.getElementById(nameId).innerText = row.c[1]?.v || '';
-            const img = document.getElementById(imgId);
-            const rawUrl = row.c[2]?.v || '';
-            
-            // Critical fix for Google Drive links
-            img.src = rawUrl.replace('file/d/', 'uc?export=view&id=').replace('/view?usp=sharing', '');
-            img.onload = () => img.style.opacity = "1";
-            img.onerror = () => {
-                console.warn(`Drive link failed for ${cat}, trying alternate...`);
-                img.src = "https://via.placeholder.com/85x105?text=Update+Photo";
-                img.style.opacity = "1";
-            };
-        }
-    }
-
-    function startSlider() {
-        let current = 0;
-        const imgs = document.querySelectorAll('.slider-box img');
-        if(imgs.length > 1) {
-            setInterval(() => {
-                imgs[current].classList.remove('active');
-                current = (current + 1) % imgs.length;
-                imgs[current].classList.add('active');
-            }, 4000);
-        }
-    }
-
-    initPortal();
+    start();
 </script>
-
 </body>
 </html>
